@@ -125,7 +125,24 @@ void    BitcoinExchange::CheckFile_Input(std::string File_Name)
                     std::cerr << "Error: not a positive number." << std::endl;
                     continue;
                 }
-
+                std::map<std::string, double>::iterator it = btcData.lower_bound(date);
+                if (it == btcData.end() || it->first != date) 
+                {
+                    if (it != btcData.begin()) {
+                        --it;
+                    } else {
+                        std::cerr << "Error: date too early." << std::endl;
+                        continue;
+                    }
+                }
+                double rate = it->second;
+                    double result = rate * value;
+        
+                    std::cout << date << " => " << value << " = " << std::fixed << std::setprecision(2) << result << std::endl;
+            }
+            else
+            {
+        
             }
         }
     }
