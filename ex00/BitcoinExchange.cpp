@@ -23,6 +23,7 @@ BitcoinExchange::BitcoinExchange()
     else
     {
         std::cerr << "there is an error in opening the file " << std::endl;
+        exit(1);
     }
 }
 
@@ -95,11 +96,19 @@ static std::string trim(std::string str)
     return str;
 }
 
-
+static bool containsAlpha(const std::string& str)
+{
+    for (size_t i = 0; i < str.length(); ++i)
+    {
+        if (std::isalpha(str[i]))
+            return true;
+    }
+    return false;
+}
 
 void    BitcoinExchange::CheckFile_Input(std::string File_Name)
 {
-    std::ifstream input_file(File_Name);
+    std::ifstream input_file(File_Name.c_str());
     if (input_file.is_open())
     {
         std::string line;
@@ -117,12 +126,20 @@ void    BitcoinExchange::CheckFile_Input(std::string File_Name)
                     std::cerr << "Error: invalid date => " << date << std::endl;
                     continue;
                 }
+                if (containsAlpha(valueStr))
+                {
+                        std::cout << "value contains alphabetic characters!" << std::endl;
+                        continue;
+                }
                 double value;
                 std::stringstream valuefile(valueStr);
                 valuefile >> value;
-                if (value < 0)
+                if (value < 0 || value > 1000)
                 {
-                    std::cerr << "Error: not a positive number." << std::endl;
+                    if (value < 0)
+                        std::cerr << "Error: not a positive number." << std::endl;
+                    else
+                        std::cout << "Error: too large a number." << std::endl;
                     continue;
                 }
                 std::map<std::string, double>::iterator it = btcData.lower_bound(date);
@@ -135,15 +152,23 @@ void    BitcoinExchange::CheckFile_Input(std::string File_Name)
                         continue;
                     }
                 }
-                double rate = it->second;
+                    double rate = it->second;
                     double result = rate * value;
         
                     std::cout << date << " => " << value << " = " << std::fixed << std::setprecision(2) << result << std::endl;
             }
             else
             {
-        
+                std::cerr << "Error: bad input => " << line << std::endl;
             }
         }
     }
+    else 
+    {
+        std::cerr << "Error: cannot open input file." << std::endl;
+        return;
+    }
 }
+
+BitcoinExchange::~BitcoinExchange()
+{}

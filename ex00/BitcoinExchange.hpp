@@ -4,6 +4,10 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
+#include <cstdlib>
+#include <climits>
+
 
 
 class BitcoinExchange
