@@ -1,11 +1,17 @@
 #include "RPN.hpp"
 
-int main(int ac, char **av)
-{
-    if (ac != 2)
-    {
-        std::cout << "Your program must be one argument for example ./RPN '8 9 * 9 - 9 - 9 - 4 - 1 +'" << std::endl;
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        std::cerr << "Error\n";
         return 1;
     }
-    Rnp::ParsingInput(av[1]);
+
+    try {
+        RPN::calculate(argv[1]);
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+
+    return 0;
 }

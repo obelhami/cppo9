@@ -1,51 +1,37 @@
 #include "RPN.hpp"
 
-std::stack<std::string> Rnp::rnp; // <<< This is the missing definition!
+void RPN::calculate(const std::string &expression) {
+    std::istringstream iss(expression);
+    std::string token;
+    std::stack<int> stack;
+    while (iss >> token) {
+        std::cout << token << std::endl;
+        if (token == "+" || token == "-" || token == "*" || token == "/") {
+            if (stack.size() < 2)
+                throw std::runtime_error("Invalid expression");
 
-Rnp::Rnp()
-{}
+            int b = stack.top(); stack.pop();
+            int a = stack.top(); stack.pop();
 
-Rnp::Rnp(const Rnp &object)
-{
-    *this = object;
-}
-
-Rnp &Rnp::operator=(const Rnp &object)
-{
-    if (this != &object)
-    {
-            this->rnp = object.rnp;
-    }
-    return *this;
-}
-
-Rnp::~Rnp()
-{}
-
-
-static bool isValidExpression(const std::string& str) {
-    for (size_t i = 0; i < str.length(); ++i) {
-        char c = str[i];
-        if (!(isdigit(c) || c == '+' || c == '-' || c == '*' || c == '/' || c == ' ')) {
-            return true;
+            if (token == "+") stack.push(a + b);
+            else if (token == "-") stack.push(a - b);
+            else if (token == "*") stack.push(a * b);
+            else if (token == "/") {
+                if (b == 0)
+                    throw std::runtime_error("Division by zero");
+                stack.push(a / b);
+            }
+        } else {
+            for (size_t i = 0; i < token.size(); ++i) {
+                if (!isdigit(token[i]))
+                    throw std::runtime_error("Invalid character");
+            }
+            stack.push(std::atoi(token.c_str()));
         }
     }
-    return false;
-}
 
-void    Rnp::ParsingInput(std::string string)
-{
-    std::cout << string<< std::endl;
+    if (stack.size() != 1)
+        throw std::runtime_error("Invalid expression");
 
-    if (isValidExpression(string) == true)
-    {
-        std::cout << "the argument has a character/n";
-        exit(1);
-    }
-    CalculationMethod(string);
-}
-
-void    Rnp::CalculationMethod(std::string string)
-{
-    while ( )
+    std::cout << stack.top() << std::endl;
 }

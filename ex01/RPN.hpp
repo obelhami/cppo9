@@ -1,18 +1,16 @@
-#pragma once
+#ifndef RPN_HPP
+#define RPN_HPP
 
 #include <iostream>
+#include <string>
 #include <stack>
+#include <sstream>
+#include <stdexcept>
 #include <cstdlib>
 
-class Rnp
-{
-    private:
-        static std::stack<std::string> rnp;
-    public:
-        Rnp();
-        Rnp(const Rnp &object);
-        Rnp &operator=(const Rnp &object);
-        ~Rnp();
-       static void    ParsingInput(std::string string);
-       static void    CalculationMethod(std::string string);
+class RPN {
+public:
+    static void calculate(const std::string &expression);
 };
+
+#endif
