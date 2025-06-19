@@ -32,12 +32,19 @@ void    MergeMe::sorting(char **arguments)
         std::string token;
         ss >> token;
         array.push_back(std::atoi(token.c_str()));
-        array.push_front(i ); 
     }
     for (std::deque<int>::iterator it = array.begin(); it != array.end(); it++)
     {
         std::cout << "here ===> " << *it << std::endl;
     }
     std::cout  << "size  = " << array.size() << std::endl;
+    int struggle = -1;
+    if (array.size() % 2 != 0)
+    {
+        struggle =  array.back();
+        std::cout  << "array end  ==> " << array.back() << std::endl;
+        std::cout  << "struggle  ==> " << struggle << std::endl;
+        array.pop_back();
+    }
 
 }
