@@ -1,6 +1,7 @@
 #include "PmergeMe.hpp"
 #include <algorithm>
 #include <ctime>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -9,6 +10,12 @@ static void InvalidArguments(char **check)
 {
     for(int i = 1; check[i]; i++)
     {
+        std::string str = check[i];
+        str.erase(0, str.find_first_not_of(" \t\n\r\f\v"));
+        str.erase(str.find_last_not_of(" \t\n\r\f\v") + 1);
+
+        if (str.empty())
+            throw std::runtime_error("Empty argument is not allowed.");
         std::istringstream ss(check[i]);
         std::string token;
         int counter = 0;
@@ -25,16 +32,6 @@ static void InvalidArguments(char **check)
         }
     }
 }
-// static std::deque<std::pair<int, int> > fillContainer(std::deque<int> &array)
-// {
-//     std::deque<std::pair<int, int> > pairs;
-//     for (size_t i = 0; i + 1 < array.size(); i+=2)
-//     {
-//         std::pair<int, int> fill = std::make_pair(array[i], array[i + 1]);
-//         pairs.push_back(fill);
-//     }
-//     return pairs;
-// }
 
 template<typename Container>
 static std::deque<std::pair<int,int> > fillPairs(Container &array)
@@ -44,13 +41,6 @@ static std::deque<std::pair<int,int> > fillPairs(Container &array)
         pairs.push_back(std::make_pair(array[i], array[i+1]));
     return pairs;
 }
-
-// static std::vector<std::pair<int, int> > fillContainer(std::vector<int> &array) {
-//     std::vector<std::pair<int, int> > pairs;
-//     for (size_t i = 0; i + 1 < array.size(); i += 2)
-//         pairs.push_back(std::make_pair(array[i], array[i + 1]));
-//     return pairs;
-// }
 
 template<typename Container>
 static void printContainer(const Container &c, const char *msg)
@@ -71,11 +61,10 @@ static std::deque<size_t> generateJacobsthalOrder(size_t size)
     std::deque<size_t> jacob;
     if (size == 0)
         return jacob;
-
     jacob.push_back(0); // a(0) = 0
+
     if (size == 1)
         return jacob;
-
     jacob.push_back(1); // a(1) = 1
 
     size_t a = 0, b = 1;
@@ -89,7 +78,6 @@ static std::deque<size_t> generateJacobsthalOrder(size_t size)
         b = next;
     }
 
-    // Now generate full insertion order like Ford-Johnson requires:
     std::deque<bool> inserted(size, false);
     std::deque<size_t> order;
 
@@ -131,6 +119,8 @@ static void BinaryInsert(std::deque<int> &chain, int value)
 template <typename Container>
 static void mergeInsertSort(Container &array)
 {
+    if (array.size() <= 1)
+        return; 
     int struggle = -1;
     if (array.size() % 2 != 0)
     {
@@ -169,7 +159,6 @@ static void mergeInsertSort(Container &array)
     if (struggle != -1)
         BinaryInsert(largest, struggle);
 
-    // Update original container with sorted results
     array.clear();
     for (size_t i = 0; i < largest.size(); i++)
         array.push_back(largest[i]);

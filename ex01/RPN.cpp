@@ -1,4 +1,5 @@
 #include "RPN.hpp"
+#include <stdexcept>
 
 void RPN::calculate(const std::string &expression)
 {
@@ -7,7 +8,7 @@ void RPN::calculate(const std::string &expression)
     std::stack<int> stack;
     while (iss >> token)
     {
-        std::cout << token << std::endl;
+        // std::cout << token << std::endl;
         if (token == "+" || token == "-" || token == "*" || token == "/")
         {
             if (stack.size() < 2)
@@ -37,6 +38,8 @@ void RPN::calculate(const std::string &expression)
                     throw std::runtime_error("Invalid character");
             }
             stack.push(std::atoi(token.c_str()));
+            if (atoi(token.c_str()) >= 10 || atoi(token.c_str()) < 0)
+                throw std::runtime_error("Invalid character");
         }
     }
     if (stack.size() != 1)

@@ -6,6 +6,11 @@ BitcoinExchange::BitcoinExchange()
     std::ifstream file("data.csv");
     if (file.is_open()) 
     {
+        if (file.peek() == std::ifstream::traits_type::eof())
+        {
+            std::cerr << "Error: file is empty!" << std::endl;
+            exit(1);
+        }
         std::string line;
         while (std::getline(file, line)) {
             std::stringstream ss(line);
@@ -111,8 +116,12 @@ void    BitcoinExchange::CheckFile_Input(std::string File_Name)
     std::ifstream input_file(File_Name.c_str());
     if (input_file.is_open())
     {
+        if (input_file.peek() == std::ifstream::traits_type::eof())
+        {
+            std::cerr << "Error: file is empty!" << std::endl;
+            exit (1);
+        }
         std::string line;
-        std::getline(input_file, line);
         while (std::getline(input_file, line))
         {
             std::stringstream ss(line);
